@@ -1,0 +1,4 @@
+canvas-booking/node_modules
+canvas-booking/dist
+.DS_Store
+*.env

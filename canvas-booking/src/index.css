@@ -1,0 +1,156 @@
+/* ── Reset ──────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body, #root { height: 100%; overflow: hidden; }
+
+/* ── Design tokens ──────────────────────────────────────────────── */
+:root {
+  /* Sidebar */
+  --sb-bg:          #3B0082;
+  --sb-hover:       rgba(255,255,255,0.07);
+  --sb-active:      rgba(255,255,255,0.14);
+  --sb-border:      rgba(255,255,255,0.09);
+  --sb-label:       #C4B5FD;
+  --sb-text:        rgba(255,255,255,0.62);
+  --sb-text-on:     #ffffff;
+
+  /* Surface */
+  --main-bg:        #F0EFFF;
+  --surface:        #ffffff;
+  --border:         #E5E7EB;
+  --border-focus:   #7C3AED;
+
+  /* Brand */
+  --accent:         #7C3AED;
+  --accent-dark:    #6D28D9;
+  --accent-light:   #EDE9FE;
+  --accent-faint:   rgba(124,58,237,0.08);
+
+  /* Status */
+  --success:        #059669;
+  --success-bg:     #D1FAE5;
+  --error:          #DC2626;
+  --error-bg:       #FEE2E2;
+  --error-border:   rgba(220,38,38,0.2);
+
+  /* Text */
+  --text:           #1E1B4B;
+  --text-muted:     #6B7280;
+  --text-light:     #9CA3AF;
+
+  /* Shadows */
+  --shadow-card:  0 1px 4px rgba(0,0,0,0.06), 0 6px 20px rgba(124,58,237,0.07);
+  --shadow-modal: 0 20px 60px rgba(0,0,0,0.25);
+  --shadow-toast: 0 4px 24px rgba(0,0,0,0.18);
+}
+
+/* ── Base typography ────────────────────────────────────────────── */
+body {
+  font-family: 'DM Sans', 'Segoe UI', system-ui, sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--main-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Shared input/select ────────────────────────────────────────── */
+input, select, button { font-family: inherit; }
+
+input, select {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  font-size: 13.5px;
+  color: var(--text);
+  background: var(--surface);
+  outline: none;
+  transition: border-color 0.14s, box-shadow 0.14s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input:focus, select:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--accent-faint);
+}
+
+input::placeholder { color: #D1D5DB; }
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.4;
+  cursor: pointer;
+}
+
+/* ── Spinner ────────────────────────────────────────────────────── */
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.spinner {
+  display: inline-block;
+  border-radius: 50%;
+  animation: spin 0.55s linear infinite;
+}
+
+.spinner-sm {
+  width: 15px; height: 15px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+}
+
+.spinner-md {
+  width: 26px; height: 26px;
+  border: 3px solid rgba(124,58,237,0.15);
+  border-top-color: var(--accent);
+}
+
+/* ── State box (loading / empty) ────────────────────────────────── */
+.state-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 32px;
+  text-align: center;
+  gap: 10px;
+}
+
+.state-box svg { opacity: 0.2; color: var(--accent); width: 44px; height: 44px; }
+.state-box h3  { font-size: 15px; font-weight: 600; }
+.state-box p   { font-size: 12.5px; color: var(--text-muted); max-width: 280px; line-height: 1.5; }
+
+/* ── Badge ──────────────────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--accent-light);
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+/* ── Toast ──────────────────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 22px; right: 22px;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  box-shadow: var(--shadow-toast);
+  transform: translateY(72px);
+  opacity: 0;
+  transition: transform 0.32s cubic-bezier(0.34,1.4,0.64,1), opacity 0.32s ease;
+  z-index: 9000;
+  max-width: 340px;
+  pointer-events: none;
+}
+
+.toast.show           { transform: translateY(0); opacity: 1; pointer-events: auto; }
+.toast.t-success      { background: var(--success); }
+.toast.t-error        { background: var(--error); }
+.toast svg            { flex-shrink: 0; width: 15px; height: 15px; }
