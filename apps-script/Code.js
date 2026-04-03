@@ -85,6 +85,9 @@ function getOrCreateSheet() {
     r.setFontWeight('bold')
     r.setBackground('#F3F0FF')
   }
+  // Keep Start Time and End Time columns as plain text so Sheets
+  // never auto-converts them to Date/time values.
+  sheet.getRange('C:D').setNumberFormat('@')
   return sheet
 }
 
@@ -97,8 +100,8 @@ function readEvents(sheet) {
     .map(r => ({
       building:      String(r[0]),
       date:          normDate(r[1]),
-      startTime:     String(r[2]),
-      endTime:       String(r[3]),
+      startTime:     normTime(r[2]),
+      endTime:       normTime(r[3]),
       attendees:     Number(r[4]),
       eventName:     String(r[5]),
       contactPerson: String(r[6]),
@@ -111,6 +114,17 @@ function normDate(v) {
     return Utilities.formatDate(v, Session.getScriptTimeZone(), 'yyyy-MM-dd')
   return String(v)
 }
+
+// Google Sheets auto-converts time strings to Date objects.
+// This converts them back to "H:MM AM/PM" format matching our time slots.
+function normTime(v) {
+  if (v instanceof Date) {
+    const formatted = Utilities.formatDate(v, Session.getScriptTimeZone(), 'h:mm a')
+    return formatted.replace('am', 'AM').replace('pm', 'PM')
+  }
+  return String(v)
+}
+
 
 function toMins(t) {
   if (!t) return 0
