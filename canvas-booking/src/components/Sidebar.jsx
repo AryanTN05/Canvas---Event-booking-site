@@ -2,13 +2,22 @@ import { useState } from 'react'
 import logo from '../assets/canvas-logo.png'
 import { BUILDINGS, APP_VERSION } from '../constants'
 
-export default function Sidebar({ activeView, onNavigate }) {
+export default function Sidebar({ activeView, onNavigate, isOpen, onClose }) {
   const [logoError, setLogoError] = useState(false)
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${isOpen ? 'sidebar-open' : ''}`}>
       {/* Logo */}
       <div className="sb-logo">
+        {/* Close button — mobile only */}
+        <button className="sb-close" onClick={onClose} aria-label="Close menu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" strokeWidth="2.5"
+               strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6"  y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
         {logoError ? (
           <div className="logo-text">
             <div className="lt-name">CANVAS</div>

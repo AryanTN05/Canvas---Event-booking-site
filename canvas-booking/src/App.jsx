@@ -25,6 +25,7 @@ const EMPTY_FORM = {
 export default function App() {
   /* ── Navigation ────────────────────────────────────────────────── */
   const [view, setView] = useState('add')
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   /* ── Form ──────────────────────────────────────────────────────── */
   const [form,      setForm]      = useState(EMPTY_FORM)
@@ -55,6 +56,7 @@ export default function App() {
 
   function navigate(name) {
     setView(name)
+    setSidebarOpen(false)
     if (name === 'scheduled') loadEvents()
   }
 
@@ -191,11 +193,31 @@ export default function App() {
   return (
     <>
       <div className="app">
-        <Sidebar activeView={view} onNavigate={navigate} />
+        {/* Mobile overlay */}
+        {sidebarOpen && (
+          <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />
+        )}
+
+        <Sidebar
+          activeView={view}
+          onNavigate={navigate}
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+        />
 
         <div className="main">
           {/* Topbar */}
           <div className="topbar">
+            {/* Hamburger — mobile only */}
+            <button className="hamburger" onClick={() => setSidebarOpen(o => !o)} aria-label="Menu">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" strokeWidth="2.2"
+                   strokeLinecap="round" strokeLinejoin="round">
+                <line x1="3" y1="6"  x2="21" y2="6"/>
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+              </svg>
+            </button>
             <div>
               <div className="topbar-title">{VIEW_META[view].title}</div>
               <div className="topbar-sub">{VIEW_META[view].sub}</div>
@@ -395,7 +417,7 @@ export default function App() {
                       <p>Switch to Add Event to schedule the first booking.</p>
                     </div>
                   ) : (
-                    <table>
+                    <div className="table-scroll"><table>
                       <thead>
                         <tr>
                           <th>#</th>
@@ -424,7 +446,7 @@ export default function App() {
                           </tr>
                         ))}
                       </tbody>
-                    </table>
+                    </table></div>
                   )}
                 </div>
               </>

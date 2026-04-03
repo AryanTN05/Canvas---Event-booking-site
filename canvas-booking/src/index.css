@@ -81,6 +81,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   cursor: pointer;
 }
 
+@media (max-width: 768px) {
+  input, select {
+    font-size: 16px; /* prevents iOS auto-zoom on focus */
+    padding: 11px 12px;
+    min-height: 44px;
+  }
+}
+
 /* ── Spinner ────────────────────────────────────────────────────── */
 @keyframes spin { to { transform: rotate(360deg); } }
 

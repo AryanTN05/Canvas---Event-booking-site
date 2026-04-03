@@ -5,6 +5,19 @@
   overflow: hidden;
 }
 
+/* Mobile overlay behind open sidebar */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 199;
+}
+
+@media (max-width: 768px) {
+  .sidebar-overlay { display: block; }
+}
+
 /* ══════════════════════════════════════════════════════════════════
    SIDEBAR
 ══════════════════════════════════════════════════════════════════ */
@@ -15,36 +28,79 @@
   background: var(--sb-bg);
   display: flex;
   flex-direction: column;
+  transition: transform 0.26s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 200;
+}
+
+/* Close button — hidden on desktop */
+.sb-close {
+  display: none;
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: rgba(255,255,255,0.12);
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0;
+    transform: translateX(-100%);
+    box-shadow: 4px 0 24px rgba(0,0,0,0.3);
+  }
+  .sidebar.sidebar-open {
+    transform: translateX(0);
+  }
+  .sb-logo {
+    position: relative;
+  }
+  .sb-close {
+    display: flex;
+  }
 }
 
 .sb-logo {
-  padding: 22px 20px 18px;
+  padding: 32px 24px 28px;
   border-bottom: 1px solid var(--sb-border);
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sb-logo img {
-  height: 50px;
-  width: auto;
+  width: 100%;
+  max-width: 200px;
+  height: auto;
   display: block;
   object-fit: contain;
+  filter: brightness(0) invert(1);
 }
 
 .sb-logo .logo-text {
   color: white;
+  text-align: center;
 }
 
 .sb-logo .logo-text .lt-name {
-  font-size: 20px;
+  font-size: 26px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
 }
 
 .sb-logo .logo-text .lt-tag {
-  font-size: 8.5px;
-  letter-spacing: 0.2em;
+  font-size: 9px;
+  letter-spacing: 0.22em;
   opacity: 0.45;
-  margin-top: 3px;
+  margin-top: 4px;
 }
 
 .sb-nav {
@@ -117,20 +173,46 @@
 .topbar {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
-  padding: 0 28px;
+  padding: 0 20px 0 28px;
   height: 58px;
   display: flex;
   align-items: center;
+  gap: 12px;
   flex-shrink: 0;
 }
 
 .topbar-title { font-size: 16px; font-weight: 600; line-height: 1.2; }
 .topbar-sub   { font-size: 11.5px; color: var(--text-muted); margin-top: 1px; }
 
+/* Hamburger — hidden on desktop */
+.hamburger {
+  display: none;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--text-muted);
+  align-items: center;
+  justify-content: center;
+  transition: background 0.13s;
+}
+
+.hamburger:hover { background: var(--accent-light); color: var(--accent); }
+
 .content {
   flex: 1;
   overflow-y: auto;
   padding: 28px 32px;
+}
+
+@media (max-width: 768px) {
+  .hamburger { display: flex; }
+  .topbar { padding: 0 16px; }
+  .topbar-sub { display: none; }
+  .content { padding: 16px; }
 }
 
 /* ══════════════════════════════════════════════════════════════════
@@ -153,6 +235,18 @@
 
 .fg       { display: flex; flex-direction: column; gap: 5px; }
 .fg.span2 { grid-column: 1 / -1; }
+
+@media (max-width: 768px) {
+  .form-card {
+    padding: 20px 16px;
+    border-radius: 12px;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .fg.span2 { grid-column: 1; }
+}
 
 .fg label {
   font-size: 10px;
@@ -227,8 +321,14 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 18px;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .ev-header { margin-bottom: 12px; }
+  .pill      { font-size: 11.5px; padding: 5px 11px; }
+  .refresh-btn { padding: 6px 10px; font-size: 12px; }
 }
 
 .pills { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -274,7 +374,12 @@
   overflow: hidden;
 }
 
-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 680px; }
 
 thead th {
   padding: 11px 14px;
