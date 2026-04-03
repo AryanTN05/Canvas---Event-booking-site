@@ -7,7 +7,7 @@ import SlotGrid      from './components/SlotGrid'
 import ConfirmModal  from './components/ConfirmModal'
 
 import { BUILDINGS, START_SLOTS, END_SLOTS, APPS_SCRIPT_URL } from './constants'
-import { toMins, fmtDate, todayISO, overlaps } from './utils'
+import { toMins, fmtDate, fmtTime, todayISO, overlaps } from './utils'
 import { getEvents, bookEvent } from './api'
 
 /* ── View metadata ───────────────────────────────────────────────── */
@@ -437,8 +437,8 @@ export default function App() {
                             <td className="td-num">{i + 1}</td>
                             <td><span className="badge">{e.building}</span></td>
                             <td>{fmtDate(e.date)}</td>
-                            <td>{e.startTime}</td>
-                            <td>{e.endTime}</td>
+                            <td>{fmtTime(e.startTime)}</td>
+                            <td>{fmtTime(e.endTime)}</td>
                             <td>{e.attendees}</td>
                             <td className="td-name">{e.eventName}</td>
                             <td>{e.contactPerson}</td>

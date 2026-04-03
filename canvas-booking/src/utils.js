@@ -41,3 +41,45 @@ export function todayISO() {
 export function overlaps(aStart, aEnd, bStart, bEnd) {
   return aStart < bEnd && aEnd > bStart
 }
+
+/**
+ * Normalize a time value to "H:MM AM/PM" display string.
+ * Handles:
+ *  - Already correct strings like "11:00 AM", "2:00 PM"
+ *  - Lowercase variants like "11:00 am"
+ *  - Date.toString() strings like "Sat Dec 30 1899 11:00:00 GMT+0530"
+ *  - 24-hour strings like "14:00"
+ */
+export function fmtTime(t) {
+  if (!t) return '—'
+  const s = String(t).trim()
+
+  // Already in H:MM AM/PM format (case-insensitive)
+  if (/^\d{1,2}:\d{2}\s*(AM|PM)$/i.test(s)) {
+    return s.replace(/\bam\b/gi, 'AM').replace(/\bpm\b/gi, 'PM')
+  }
+
+  // Extract HH:MM from a Date.toString() like "Sat Dec 30 1899 14:00:00 GMT+..."
+  const dateMatch = s.match(/(\d{1,2}):(\d{2}):\d{2}/)
+  if (dateMatch) {
+    let h = parseInt(dateMatch[1], 10)
+    const m = dateMatch[2]
+    const period = h >= 12 ? 'PM' : 'AM'
+    if (h === 0) h = 12
+    else if (h > 12) h -= 12
+    return `${h}:${m} ${period}`
+  }
+
+  // 24-hour format "14:00"
+  const plainMatch = s.match(/^(\d{1,2}):(\d{2})$/)
+  if (plainMatch) {
+    let h = parseInt(plainMatch[1], 10)
+    const m = plainMatch[2]
+    const period = h >= 12 ? 'PM' : 'AM'
+    if (h === 0) h = 12
+    else if (h > 12) h -= 12
+    return `${h}:${m} ${period}`
+  }
+
+  return s
+}
