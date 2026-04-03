@@ -1,5 +1,5 @@
 // ── Paste your deployed Apps Script Web App URL here ──────────────
-export const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE'
+export const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyYJH6nVZqSj9Xv_m5ZM4U1PdlwVDa6mdohDh1hOuYa511M7Jh8KNsl-nRsrHZhnhaM/exec'
 
 // ── Buildings ──────────────────────────────────────────────────────
 export const BUILDINGS = ['Canvas 1317', 'Canvas 1331']
