@@ -114,6 +114,9 @@ export default function App() {
     if (parseInt(attendees, 10) < 1) {
       return 'Number of attendees must be at least 1.'
     }
+    if (parseInt(attendees, 10) > 200) {
+      return 'Maximum 200 attendees allowed per booking.'
+    }
     if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
       return 'Setup needed: replace YOUR_APPS_SCRIPT_URL_HERE in src/constants.js with your Apps Script URL.'
     }
@@ -314,7 +317,7 @@ export default function App() {
                   <div className="fg">
                     <label>No. of Attendees</label>
                     <input
-                      type="number" min="1" placeholder="e.g. 12"
+                      type="number" min="1" max="200" placeholder="e.g. 12"
                       value={form.attendees}
                       onChange={e => setField('attendees', e.target.value)}
                     />
