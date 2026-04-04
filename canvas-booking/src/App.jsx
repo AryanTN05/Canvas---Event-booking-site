@@ -6,7 +6,7 @@ import Calendar      from './components/Calendar'
 import SlotGrid      from './components/SlotGrid'
 import ConfirmModal  from './components/ConfirmModal'
 
-import { BUILDINGS, START_SLOTS, END_SLOTS, APPS_SCRIPT_URL } from './constants'
+import { BUILDINGS, END_SLOTS, APPS_SCRIPT_URL } from './constants'
 import { toMins, fmtDate, fmtTime, todayISO, overlaps } from './utils'
 import { getEvents, bookEvent } from './api'
 
@@ -178,6 +178,22 @@ export default function App() {
       return d !== 0 ? d : toMins(b.startTime) - toMins(a.startTime)
     })
 
+  /* ── Slot grid two-click range selection ───────────────────────── */
+  function handleSlotClick(slot) {
+    const { startTime, endTime } = form
+    if (!startTime || endTime) {
+      // No start yet, or both already set → reset and pick new start
+      setForm(prev => ({ ...prev, startTime: slot, endTime: '' }))
+    } else if (toMins(slot) > toMins(startTime)) {
+      // Start set, no end yet, clicked after start → set as end
+      setForm(prev => ({ ...prev, endTime: slot }))
+    } else {
+      // Clicked same slot or before start → reset to new start
+      setForm(prev => ({ ...prev, startTime: slot, endTime: '' }))
+    }
+    setFormError('')
+  }
+
   /* ── Filtered end-time options (disable <= start) ──────────────── */
   function endTimeOptions() {
     const startMins = form.startTime ? toMins(form.startTime) : -1
@@ -228,135 +244,126 @@ export default function App() {
             {/* ── ADD EVENT ─────────────────────────────────────── */}
             {view === 'add' && (
               <div className="form-card">
-                <div className="form-grid">
 
-                  {/* Inline error alert */}
-                  {formError && (
-                    <div className="fg span2">
-                      <div className="form-alert show">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" strokeWidth="2"
-                             strokeLinecap="round" strokeLinejoin="round">
-                          <circle cx="12" cy="12" r="10"/>
-                          <line x1="12" y1="8"  x2="12"    y2="12"/>
-                          <line x1="12" y1="16" x2="12.01" y2="16"/>
-                        </svg>
-                        <span>{formError}</span>
-                      </div>
+                {/* Inline error alert */}
+                {formError && (
+                  <div className="form-alert show" style={{ marginBottom: 20 }}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" strokeWidth="2"
+                         strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10"/>
+                      <line x1="12" y1="8"  x2="12"    y2="12"/>
+                      <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    <span>{formError}</span>
+                  </div>
+                )}
+
+                {/* ── Step 1: Where? ── */}
+                <div className="form-step">
+                  <div className="step-header">
+                    <span className="step-num">1</span>
+                    <span className="step-title">Where?</span>
+                  </div>
+                  <div className="building-pills">
+                    {BUILDINGS.map(b => (
+                      <button
+                        key={b}
+                        className={`building-pill ${form.building === b ? 'active' : ''}`}
+                        onClick={() => setField('building', b)}
+                      >
+                        {b}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* ── Step 2: When? ── */}
+                <div className="form-step">
+                  <div className="step-header">
+                    <span className="step-num">2</span>
+                    <span className="step-title">When?</span>
+                  </div>
+                  <div className="when-grid">
+                    {/* Left: Calendar */}
+                    <div className="when-cal">
+                      <Calendar value={form.date} onChange={d => setField('date', d)} />
                     </div>
-                  )}
 
-                  {/* Building */}
-                  <div className="fg">
-                    <label>Building</label>
-                    <div className="sel-wrap">
-                      <select value={form.building} onChange={e => setField('building', e.target.value)}>
-                        <option value="">— Select Building —</option>
-                        {BUILDINGS.map(b => <option key={b} value={b}>{b}</option>)}
-                      </select>
+                    {/* Right: Time availability */}
+                    <div className="when-time">
+                      {form.building && form.date ? (
+                        <>
+                          <SlotGrid
+                            bookedRanges={bookedRanges}
+                            selectedStart={form.startTime}
+                            selectedEnd={form.endTime}
+                            onSelect={handleSlotClick}
+                            loading={previewLoading}
+                          />
+                        </>
+                      ) : (
+                        <div className="time-placeholder">
+                          <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                               stroke="currentColor" strokeWidth="1.5"
+                               strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                          </svg>
+                          <p>Select a building &amp; date to check availability</p>
+                        </div>
+                      )}
                     </div>
                   </div>
+                </div>
 
-                  {/* Date — custom Calendar */}
-                  <div className="fg">
-                    <label>Date</label>
-                    <Calendar value={form.date} onChange={d => setField('date', d)} />
+                {/* ── Step 3: Event Details ── */}
+                <div className="form-step form-step-last">
+                  <div className="step-header">
+                    <span className="step-num">3</span>
+                    <span className="step-title">Event Details</span>
                   </div>
-
-                  {/* SlotGrid — availability preview */}
-                  {form.building && form.date && (
-                    <div className="fg span2">
-                      <SlotGrid
-                        bookedRanges={bookedRanges}
-                        selectedStart={form.startTime}
-                        selectedEnd={form.endTime}
-                        onSelect={slot => setField('startTime', slot)}
-                        loading={previewLoading}
+                  <div className="details-grid">
+                    <div className="fg">
+                      <label>Event Name</label>
+                      <input
+                        type="text" placeholder="e.g. Product Review"
+                        value={form.eventName}
+                        onChange={e => setField('eventName', e.target.value)}
                       />
                     </div>
-                  )}
-
-                  {/* Start Time */}
-                  <div className="fg">
-                    <label>Start Time</label>
-                    <div className="sel-wrap">
-                      <select value={form.startTime} onChange={e => setField('startTime', e.target.value)}>
-                        <option value="">— Select Start Time —</option>
-                        {START_SLOTS.map(t => {
-                          const slotStart = toMins(t)
-                          const slotEnd   = slotStart + 60
-                          const isBooked  = bookedRanges.some(r => overlaps(slotStart, slotEnd, r.s, r.e))
-                          return (
-                            <option key={t} value={t}>
-                              {t}{isBooked ? ' — booked' : ''}
-                            </option>
-                          )
-                        })}
-                      </select>
+                    <div className="fg">
+                      <label>No. of Attendees</label>
+                      <input
+                        type="number" placeholder="e.g. 12"
+                        value={form.attendees}
+                        onChange={e => setField('attendees', e.target.value)}
+                      />
+                    </div>
+                    <div className="fg">
+                      <label>Contact Person</label>
+                      <input
+                        type="text" placeholder="Full name"
+                        value={form.contactPerson}
+                        onChange={e => setField('contactPerson', e.target.value)}
+                      />
+                    </div>
+                    <div className="fg">
+                      <label>Contact Number</label>
+                      <input
+                        type="tel" placeholder="10-digit number" maxLength={10}
+                        value={form.contactNumber}
+                        onChange={e => setField('contactNumber', e.target.value.replace(/[^0-9]/g, ''))}
+                      />
                     </div>
                   </div>
-
-                  {/* End Time */}
-                  <div className="fg">
-                    <label>End Time</label>
-                    <div className="sel-wrap">
-                      <select value={form.endTime} onChange={e => setField('endTime', e.target.value)}>
-                        <option value="">— Select End Time —</option>
-                        {endTimeOptions().map(({ label, value, disabled }) => (
-                          <option key={value} value={value} disabled={disabled}>{label}</option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Attendees */}
-                  <div className="fg">
-                    <label>No. of Attendees</label>
-                    <input
-                      type="number" min="1" max="200" placeholder="e.g. 12"
-                      value={form.attendees}
-                      onChange={e => setField('attendees', e.target.value)}
-                    />
-                  </div>
-
-                  {/* Event Name */}
-                  <div className="fg">
-                    <label>Event Name</label>
-                    <input
-                      type="text" placeholder="e.g. Product Review"
-                      value={form.eventName}
-                      onChange={e => setField('eventName', e.target.value)}
-                    />
-                  </div>
-
-                  {/* Contact Person */}
-                  <div className="fg">
-                    <label>Contact Person</label>
-                    <input
-                      type="text" placeholder="Full name"
-                      value={form.contactPerson}
-                      onChange={e => setField('contactPerson', e.target.value)}
-                    />
-                  </div>
-
-                  {/* Contact Number */}
-                  <div className="fg">
-                    <label>Contact Number</label>
-                    <input
-                      type="tel" placeholder="10-digit number" maxLength={10}
-                      value={form.contactNumber}
-                      onChange={e => setField('contactNumber', e.target.value.replace(/[^0-9]/g, ''))}
-                    />
-                  </div>
-
-                  {/* Submit */}
-                  <div className="fg span2">
-                    <button className="submit-btn" onClick={handleSubmitClick}>
-                      Review &amp; Book
-                    </button>
-                  </div>
-
                 </div>
+
+                {/* Submit */}
+                <button className="submit-btn" onClick={handleSubmitClick}>
+                  Review &amp; Book
+                </button>
+
               </div>
             )}
 
