@@ -39,7 +39,7 @@ function doGet(e) {
 function doPost(e) {
   try {
     const d = JSON.parse(e.postData.contents)
-    const { building, date, startTime, endTime,
+    const { action, id, building, date, startTime, endTime,
             attendees, eventName, contactPerson, contactNumber } = d
 
     // No fields are mandatory — submit whatever is provided
@@ -51,6 +51,9 @@ function doPost(e) {
 
     for (const ev of events) {
       if (ev.building !== building || ev.date !== date) continue
+      // Skip checking against itself if editing
+      if (action === 'edit' && ev.id === id) continue
+      
       const es = toMins(ev.startTime)
       const ee = toMins(ev.endTime)
       if (ns < ee && ne > es) {
@@ -62,8 +65,14 @@ function doPost(e) {
       }
     }
 
-    sheet.appendRow([building, date, startTime, endTime,
-                     attendees, eventName, contactPerson, contactNumber])
+    if (action === 'edit' && id) {
+      sheet.getRange(id, 1, 1, HEADERS.length).setValues([[
+        building, date, startTime, endTime, attendees, eventName, contactPerson, contactNumber
+      ]])
+    } else {
+      sheet.appendRow([building, date, startTime, endTime,
+                       attendees, eventName, contactPerson, contactNumber])
+    }
     return json({ success: true })
 
   } catch (err) {
@@ -93,17 +102,22 @@ function readEvents(sheet) {
   if (last < 2) return []
   return sheet.getRange(2, 1, last - 1, HEADERS.length)
     .getValues()
-    .filter(r => r[0])
-    .map(r => ({
-      building:      String(r[0]),
-      date:          normDate(r[1]),
-      startTime:     normTime(r[2]),
-      endTime:       normTime(r[3]),
-      attendees:     Number(r[4]),
-      eventName:     String(r[5]),
-      contactPerson: String(r[6]),
-      contactNumber: String(r[7]),
-    }))
+    .map((r, i) => ({ rowData: r, rowNum: i + 2 }))
+    .filter(item => item.rowData[0])
+    .map(item => {
+      const r = item.rowData;
+      return {
+        id:            item.rowNum,
+        building:      String(r[0]),
+        date:          normDate(r[1]),
+        startTime:     normTime(r[2]),
+        endTime:       normTime(r[3]),
+        attendees:     Number(r[4]),
+        eventName:     String(r[5]),
+        contactPerson: String(r[6]),
+        contactNumber: String(r[7]),
+      };
+    })
 }
 
 function normDate(v) {

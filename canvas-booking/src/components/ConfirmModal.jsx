@@ -76,8 +76,8 @@ export default function ConfirmModal({ booking, onConfirm, onCancel, isLoading }
           </button>
           <button className="modal-confirm" onClick={onConfirm} disabled={isLoading}>
             {isLoading
-              ? <><span className="spinner spinner-sm" />&ensp;Booking&hellip;</>
-              : 'Confirm & Book'
+              ? <><span className="spinner spinner-sm" />&ensp;{booking.action === 'edit' ? 'Updating' : 'Booking'}&hellip;</>
+              : (booking.action === 'edit' ? 'Confirm & Update' : 'Confirm & Book')
             }
           </button>
         </div>

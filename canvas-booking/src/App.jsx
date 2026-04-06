@@ -13,12 +13,13 @@ import { getEvents, bookEvent } from './api'
 /* ── View metadata ───────────────────────────────────────────────── */
 const VIEW_META = {
   add:       { title: 'Add Event',        sub: 'Book a room in Canvas 1317 or Canvas 1331' },
+  edit:      { title: 'Edit Event',       sub: 'Update the details for this booking' },
   scheduled: { title: 'Scheduled Events', sub: 'All upcoming bookings across both buildings' },
 }
 
 /* ── Initial form state ──────────────────────────────────────────── */
 const EMPTY_FORM = {
-  building: '', date: '', startTime: '', endTime: '',
+  id: '', action: '', building: '', date: '', startTime: '', endTime: '',
   attendees: '', eventName: '', contactPerson: '', contactNumber: '',
 }
 
@@ -136,7 +137,10 @@ export default function App() {
       const result = await bookEvent(payload)
 
       if (result.success) {
-        showToast('success', `✓  "${form.eventName}" booked successfully!`)
+        const msg = form.action === 'edit' 
+          ? `✓  "${form.eventName}" updated successfully!`
+          : `✓  "${form.eventName}" booked successfully!`
+        showToast('success', msg)
         setForm(EMPTY_FORM)
         setShowConfirm(false)
         setBookedRanges([])
@@ -204,6 +208,13 @@ export default function App() {
     }))
   }
 
+  /* ── Edit Event ────────────────────────────────────────────────── */
+  function handleEditClick(e) {
+    setForm({ ...e, action: 'edit' })
+    setView('edit')
+    setFormError('')
+  }
+
   /* ── Render ────────────────────────────────────────────────────── */
   return (
     <>
@@ -234,15 +245,15 @@ export default function App() {
               </svg>
             </button>
             <div>
-              <div className="topbar-title">{VIEW_META[view].title}</div>
-              <div className="topbar-sub">{VIEW_META[view].sub}</div>
+              <div className="topbar-title">{VIEW_META[view]?.title}</div>
+              <div className="topbar-sub">{VIEW_META[view]?.sub}</div>
             </div>
           </div>
 
           <div className="content">
 
-            {/* ── ADD EVENT ─────────────────────────────────────── */}
-            {view === 'add' && (
+            {/* ── ADD/EDIT EVENT ─────────────────────────────────── */}
+            {(view === 'add' || view === 'edit') && (
               <div className="form-card">
 
                 {/* Inline error alert */}
@@ -393,7 +404,7 @@ export default function App() {
                   </button>
                 </div>
 
-                <div className="table-card">
+                <div className="events-container">
                   {eventsLoading ? (
                     <div className="state-box">
                       <span className="spinner spinner-md" />
@@ -423,34 +434,44 @@ export default function App() {
                       <p>Switch to Add Event to schedule the first booking.</p>
                     </div>
                   ) : (
-                    <div className="table-scroll"><table>
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Building</th>
-                          <th>Event Name</th>
-                          <th>Date</th>
-                          <th>Time</th>
-                          <th>Attendees</th>
-                          <th>Contact Person</th>
-                          <th>Contact Number</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {visibleEvents.map((e, i) => (
-                          <tr key={`${e.building}-${e.date}-${e.startTime}-${i}`}>
-                            <td className="td-num">{i + 1}</td>
-                            <td><span className="badge">{e.building}</span></td>
-                            <td className="td-name">{e.eventName}</td>
-                            <td>{fmtDate(e.date)}</td>
-                            <td style={{whiteSpace:'nowrap'}}>{fmtTime(e.startTime)}{e.endTime ? ` – ${fmtTime(e.endTime)}` : ''}</td>
-                            <td>{e.attendees}</td>
-                            <td>{e.contactPerson}</td>
-                            <td>{e.contactNumber}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table></div>
+                    <div className="events-grid">
+                      {visibleEvents.map((e, i) => (
+                        <div key={`${e.building}-${e.date}-${e.startTime}-${i}`} className="event-card">
+                          <div className="event-card-header">
+                            <span className="badge">{e.building}</span>
+                            <span className="event-card-date">{fmtDate(e.date)}</span>
+                          </div>
+                          <h3 className="event-card-title">{e.eventName}</h3>
+                          <div className="event-card-time">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            {fmtTime(e.startTime)}{e.endTime ? ` – ${fmtTime(e.endTime)}` : ''}
+                          </div>
+                          <div className="event-card-details">
+                            <div className="event-card-detail">
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                              {e.attendees} Attendees
+                            </div>
+                            <div className="event-card-detail">
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                              {e.contactPerson}
+                            </div>
+                            <div className="event-card-detail">
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                              {e.contactNumber}
+                            </div>
+                          </div>
+                          <div className="event-card-actions">
+                            <button className="edit-btn" onClick={() => handleEditClick(e)}>
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                              </svg>
+                              Edit
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   )}
                 </div>
               </>
