@@ -75,7 +75,7 @@ export default function App() {
 
   /* Fetch booked ranges for availability preview */
   const fetchPreview = useCallback(async (building, date, currentId) => {
-    if (!building || !date || APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    if (!building || !date) {
       setBookedRanges([])
       return
     }
@@ -138,9 +138,6 @@ export default function App() {
     }
     if (attendees && parseInt(attendees, 10) > 200) {
       return 'Maximum 200 attendees allowed per booking.'
-    }
-    if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
-      return 'Setup needed: replace YOUR_APPS_SCRIPT_URL_HERE in src/constants.js with your Apps Script URL.'
     }
     return ''
   }
