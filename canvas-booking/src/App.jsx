@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
+import { useNavigate as useRouterNavigate, Navigate } from 'react-router-dom'
 import './App.css'
 
 import Sidebar       from './components/Sidebar'
@@ -26,6 +27,23 @@ const EMPTY_FORM = {
 }
 
 export default function App() {
+  /* ── Auth ──────────────────────────────────────────────────────── */
+  const routerNavigate = useRouterNavigate()
+  const [session, setSession] = useState(undefined) // undefined=loading, null=no session
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => setSession(session))
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+      setSession(session)
+    })
+    return () => subscription.unsubscribe()
+  }, [])
+
+  async function handleLogout() {
+    await supabase.auth.signOut()
+    routerNavigate('/admin/login', { replace: true })
+  }
+
   /* ── Navigation ────────────────────────────────────────────────── */
   const [view, setView] = useState('add')
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -249,6 +267,14 @@ export default function App() {
     setFormError('')
   }
 
+  /* ── Auth guard ────────────────────────────────────────────────── */
+  if (session === undefined) return (
+    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100dvh' }}>
+      <span className="spinner spinner-md" />
+    </div>
+  )
+  if (!session) return <Navigate to="/admin/login" replace />
+
   /* ── Render ────────────────────────────────────────────────────── */
   return (
     <>
@@ -263,6 +289,7 @@ export default function App() {
           onNavigate={navigate}
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
+          onLogout={handleLogout}
         />
 
         <div className="main">
