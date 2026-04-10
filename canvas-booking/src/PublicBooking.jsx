@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
+import HeroSection  from './components/HeroSection'
 import Calendar     from './components/Calendar'
 import SlotGrid     from './components/SlotGrid'
 import ConfirmModal from './components/ConfirmModal'
 import { PUBLIC_BUILDINGS } from './constants'
 import { toMins, overlaps } from './utils'
 import { getEvents, bookEvent } from './api'
-import logo from './assets/canvas-logo.png'
 import './App.css'
 import './PublicBooking.css'
 
@@ -15,6 +15,12 @@ const EMPTY_FORM = {
 }
 
 export default function PublicBooking() {
+  /* ── Scroll to booking ─────────────────────────────────────────── */
+  const bookingRef = useRef(null)
+  function scrollToBooking() {
+    bookingRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
   /* ── Form ──────────────────────────────────────────────────────── */
   const [form,       setFormState] = useState(EMPTY_FORM)
   const [formError,  setFormError] = useState('')
@@ -166,19 +172,10 @@ export default function PublicBooking() {
   return (
     <div className="public-page">
 
-      {/* Header */}
-      <header className="public-header">
-        <img src={logo} alt="Canvas" className="public-logo"
-             onError={e => { e.target.style.display = 'none' }} />
-        <div className="public-header-divider" />
-        <div className="public-header-text">
-          <span className="public-title">Book an Event</span>
-          <span className="public-sub">Reserve a space at Canvas Workspace</span>
-        </div>
-      </header>
+      <HeroSection onBookClick={scrollToBooking} />
 
       {/* Form */}
-      <main className="public-main">
+      <main className="public-main" ref={bookingRef}>
         <div className="form-card">
 
           {/* Step 1: Where? */}
