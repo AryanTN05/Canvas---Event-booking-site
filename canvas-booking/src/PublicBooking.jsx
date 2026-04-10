@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import Calendar     from './components/Calendar'
 import SlotGrid     from './components/SlotGrid'
 import ConfirmModal from './components/ConfirmModal'
-import { BUILDINGS } from './constants'
+import { PUBLIC_BUILDINGS } from './constants'
 import { toMins, overlaps } from './utils'
 import { getEvents, bookEvent } from './api'
 import logo from './assets/canvas-logo.png'
@@ -188,7 +188,7 @@ export default function PublicBooking() {
               <span className="step-title">Where?</span>
             </div>
             <div className="building-pills">
-              {BUILDINGS.map(b => (
+              {PUBLIC_BUILDINGS.map(b => (
                 <button
                   key={b}
                   className={`building-pill ${form.building === b ? 'active' : ''}`}

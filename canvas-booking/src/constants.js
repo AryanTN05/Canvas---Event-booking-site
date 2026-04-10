@@ -1,5 +1,8 @@
-// ── Buildings ──────────────────────────────────────────────────────
-export const BUILDINGS = ['Canvas 1317', 'Canvas 1331', 'Canvas 144', 'Others']
+// ── Buildings (admin — all venues) ────────────────────────────────
+export const BUILDINGS = ['Canvas 1317', 'Canvas 1331', 'Canvas 144', 'Canvas 527', 'Others']
+
+// ── Buildings (public booking page) ───────────────────────────────
+export const PUBLIC_BUILDINGS = ['Canvas 1317', 'Canvas 1331']
 
 // ── Time slots ────────────────────────────────────────────────────
 export const START_SLOTS = [
