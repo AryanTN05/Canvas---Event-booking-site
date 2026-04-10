@@ -23,6 +23,7 @@ export default function ConfirmModal({ booking, onConfirm, onCancel, isLoading }
     { label: 'Event Name', value: booking.eventName },
     { label: 'Contact Person', value: booking.contactPerson },
     { label: 'Contact Number', value: booking.contactNumber },
+    ...(booking.otherDetails ? [{ label: 'Other Details', value: booking.otherDetails }] : []),
   ]
 
   return (

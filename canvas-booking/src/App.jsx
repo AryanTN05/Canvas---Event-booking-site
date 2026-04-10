@@ -23,7 +23,7 @@ const VIEW_META = {
 /* ── Initial form state ──────────────────────────────────────────── */
 const EMPTY_FORM = {
   id: '', action: '', building: '', date: '', startTime: '', endTime: '',
-  attendees: '', eventName: '', contactPerson: '', contactNumber: '',
+  attendees: '', eventName: '', contactPerson: '', contactNumber: '', otherDetails: '',
 }
 
 export default function App() {
@@ -413,6 +413,15 @@ export default function App() {
                         type="tel" placeholder="10-digit number" maxLength={10}
                         value={form.contactNumber}
                         onChange={e => setField('contactNumber', e.target.value.replace(/[^0-9]/g, ''))}
+                      />
+                    </div>
+                    <div className="fg fg-full">
+                      <label>Other Details</label>
+                      <textarea
+                        placeholder="Any additional information, requirements, or notes…"
+                        value={form.otherDetails}
+                        onChange={e => setField('otherDetails', e.target.value)}
+                        rows={3}
                       />
                     </div>
                   </div>

@@ -11,7 +11,7 @@ import './PublicBooking.css'
 
 const EMPTY_FORM = {
   id: '', action: 'add', building: '', date: '', startTime: '', endTime: '',
-  attendees: '', eventName: '', contactPerson: '', contactNumber: '',
+  attendees: '', eventName: '', contactPerson: '', contactNumber: '', otherDetails: '',
 }
 
 export default function PublicBooking() {
@@ -159,6 +159,7 @@ export default function PublicBooking() {
       <header className="public-header">
         <img src={logo} alt="Canvas" className="public-logo"
              onError={e => { e.target.style.display = 'none' }} />
+        <div className="public-header-divider" />
         <div className="public-header-text">
           <span className="public-title">Book an Event</span>
           <span className="public-sub">Reserve a space at Canvas Workspace</span>
@@ -260,6 +261,15 @@ export default function PublicBooking() {
                   type="tel" placeholder="10-digit number" maxLength={10}
                   value={form.contactNumber}
                   onChange={e => setField('contactNumber', e.target.value.replace(/[^0-9]/g, ''))}
+                />
+              </div>
+              <div className="fg fg-full">
+                <label>Other Details</label>
+                <textarea
+                  placeholder="Any additional information, requirements, or notes…"
+                  value={form.otherDetails}
+                  onChange={e => setField('otherDetails', e.target.value)}
+                  rows={3}
                 />
               </div>
             </div>

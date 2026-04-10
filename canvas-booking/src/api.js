@@ -25,7 +25,8 @@ export async function getEvents(filters = {}, isAdmin = false) {
     endTime: e.end_time,
     eventName: e.event_name,
     contactPerson: e.contact_person,
-    contactNumber: e.contact_number
+    contactNumber: e.contact_number,
+    otherDetails: e.other_details,
   }))
 }
 
@@ -45,6 +46,7 @@ export async function bookEvent(payload) {
     event_name:     data.eventName,
     contact_person: data.contactPerson,
     contact_number: data.contactNumber,
+    other_details:  data.otherDetails || null,
     status:         'confirmed'
   }
 

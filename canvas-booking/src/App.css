@@ -383,6 +383,29 @@
 
 .fg { display: flex; flex-direction: column; gap: 5px; }
 
+.fg-full { grid-column: 1 / -1; }
+
+textarea {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  font-size: 13.5px;
+  color: var(--text);
+  background: var(--surface);
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+  transition: border-color 0.14s, box-shadow 0.14s;
+}
+
+textarea:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--accent-faint);
+}
+
+textarea::placeholder { color: #D1D5DB; }
+
 .fg label {
   font-size: 10px;
   font-weight: 700;
