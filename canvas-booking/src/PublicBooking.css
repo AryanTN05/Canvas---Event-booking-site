@@ -1,18 +1,232 @@
 /* ── Public Booking Page ────────────────────────────────────────── */
 .public-page {
   min-height: 100dvh;
-  background: var(--main-bg);
+  background: #F4F3FF;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
 }
 
-/* Main content area */
+/* ── Shared section heading ──────────────────────────────────────── */
+.section-heading {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(18px, 2.2vw, 26px);
+  font-weight: 800;
+  color: #0D0D0D;
+  text-align: center;
+  margin: 0 auto 40px;
+  letter-spacing: -0.02em;
+  display: block;
+  width: fit-content;
+  padding: 10px 28px;
+  background: rgba(102, 0, 255, 0.08);
+  border: 1.5px solid rgba(102, 0, 255, 0.15);
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.section-heading-wrap {
+  width: 100%;
+}
+
+/* ── Past Events Marquee ─────────────────────────────────────────── */
+.past-events {
+  padding: 72px 0 76px;
+  overflow: hidden;
+}
+
+.marquee-wrapper {
+  overflow: hidden;
+  width: 100%;
+  cursor: default;
+}
+
+.marquee-track {
+  display: flex;
+  gap: 18px;
+  width: max-content;
+  animation: marquee-scroll 28s linear infinite;
+}
+
+.marquee-wrapper:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.marquee-photo {
+  width: 380px;
+  height: 260px;
+  border-radius: 16px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.marquee-photo span {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6600FF;
+  opacity: 0.55;
+}
+
+.marquee-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mp-1 { background: #C4B5FD; }
+.mp-2 { background: #DDD6FE; }
+.mp-3 { background: #EDE9FE; }
+.mp-4 { background: #D8B4FE; }
+.mp-5 { background: #E9D5FF; }
+.mp-6 { background: #F3E8FF; }
+
+/* ── Offerings Section ───────────────────────────────────────────── */
+.offerings {
+  padding: 72px 48px 80px;
+}
+
+.offerings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.offering-right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.offering-card {
+  background: #5B21B6;
+  border-radius: 20px;
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.offering-card-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.offering-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.offering-item {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 1.4;
+}
+
+.offering-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.45);
+  flex-shrink: 0;
+}
+
+.offering-dash {
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.offering-card--pricing { gap: 24px; }
+
+.pricing-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.pricing-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+}
+
+.pricing-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.pricing-day {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.pricing-amount {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.pricing-per {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* ── Booking Section ─────────────────────────────────────────────── */
 .public-main {
   flex: 1;
-  padding: 28px 24px 48px;
+  padding: 72px 24px 80px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.booking-section-header {
+  text-align: center;
+  margin-bottom: 36px;
+  width: 100%;
+  max-width: 860px;
+}
+
+.booking-section-header .section-heading-wrap {
+  margin-bottom: 8px;
+}
+
+.booking-section-sub {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px;
+  color: #6B7280;
+  margin: 0;
+  font-weight: 400;
 }
 
 .public-main .form-card {
@@ -20,7 +234,7 @@
   max-width: 860px;
 }
 
-/* Celebration popup */
+/* ── Celebration popup ───────────────────────────────────────────── */
 .celebration-overlay {
   position: fixed;
   inset: 0;
@@ -95,7 +309,10 @@
 
 .celebration-btn:hover { background: var(--accent-dark); }
 
-/* Mobile */
-@media (max-width: 600px) {
-  .public-main { padding: 20px 16px 48px; }
+/* ── Mobile ──────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .offerings       { padding: 56px 20px 60px; }
+  .offerings-grid  { grid-template-columns: 1fr; }
+  .public-main     { padding: 48px 16px 64px; }
+  .past-events     { padding: 56px 0 60px; }
 }

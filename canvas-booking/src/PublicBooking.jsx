@@ -162,17 +162,95 @@ export default function PublicBooking() {
 
       <HeroSection onBookClick={scrollToBooking} />
 
+      {/* Past Events */}
+      <section className="past-events">
+        <div className="section-heading-wrap"><h2 className="section-heading">Past Events</h2></div>
+        <div className="marquee-wrapper">
+          <div className="marquee-track">
+            {[1,2,3,4,5,6,7,8].map(i => (
+              <div key={i} className={`marquee-photo mp-${(i % 6) + 1}`}>
+                <span>Event {i}</span>
+              </div>
+            ))}
+            {[1,2,3,4,5,6,7,8].map(i => (
+              <div key={`d${i}`} className={`marquee-photo mp-${(i % 6) + 1}`}>
+                <span>Event {i}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Offerings */}
+      <section className="offerings">
+        <div className="section-heading-wrap"><h2 className="section-heading">What We Offer</h2></div>
+        <div className="offerings-grid">
+
+          {/* Our offering includes */}
+          <div className="offering-card offering-card--main">
+            <h3 className="offering-card-title">Our offering includes</h3>
+            <ul className="offering-list">
+              {['Speaker & mic', 'TV with stand (55 inch)', 'Wifi', 'Power',
+                'Seating for up to 80 people', 'Housekeeping', 'Drinking Water'
+              ].map(item => (
+                <li key={item} className="offering-item">
+                  <span className="offering-dot" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Right stack */}
+          <div className="offering-right">
+
+            {/* Ideal for hosting */}
+            <div className="offering-card">
+              <h3 className="offering-card-title">Ideal for hosting</h3>
+              <ul className="offering-list">
+                {['Panel Discussion', 'Networking Event', 'Mixers', 'Hands on session'].map(item => (
+                  <li key={item} className="offering-item">
+                    <span className="offering-dash">—</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Pricing */}
+            <div className="offering-card offering-card--pricing">
+              <h3 className="offering-card-title">Pricing</h3>
+              <div className="pricing-rows">
+                <div className="pricing-row">
+                  <span className="pricing-day">Weekend</span>
+                  <span className="pricing-amount">₹5,000 <span className="pricing-per">/ hr</span></span>
+                </div>
+                <div className="pricing-divider" />
+                <div className="pricing-row">
+                  <span className="pricing-day">Weekday</span>
+                  <span className="pricing-amount">₹3,000 <span className="pricing-per">/ hr</span></span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
       {/* Form */}
       <main className="public-main" ref={bookingRef}>
+        <div className="booking-section-header">
+          <div className="section-heading-wrap"><h2 className="section-heading">Book a Space</h2></div>
+          <p className="booking-section-sub">Fill in the details below and we'll confirm your booking shortly.</p>
+        </div>
         <div className="form-card">
 
-          {/* Step 1: Where? */}
+          {/* Step 1: Select Venue */}
           <div className="form-step">
             <div className="step-header">
-              <span className="step-num">1</span>
-              <span className="step-title">Where?</span>
+              <div className="step-header-pill"><span className="step-num">1</span><span className="step-title">Select Venue</span></div>
             </div>
-            <div className="building-pills">
+            <div className="building-pills building-pills--centered">
               {PUBLIC_BUILDINGS.map(b => (
                 <button
                   key={b}
@@ -185,48 +263,49 @@ export default function PublicBooking() {
             </div>
           </div>
 
-          {/* Step 2: When? */}
+          {/* Step 2: Select Date */}
           <div className="form-step">
             <div className="step-header">
-              <span className="step-num">2</span>
-              <span className="step-title">When?</span>
+              <div className="step-header-pill"><span className="step-num">2</span><span className="step-title">Select Date</span></div>
             </div>
-            <div className="when-grid">
-              <div className="when-cal">
-                <Calendar value={form.date} onChange={d => setField('date', d)} />
-              </div>
-              <div className="when-time">
-                {form.building && form.date ? (
-                  <SlotGrid
-                    bookedRanges={bookedRanges}
-                    selectedStart={form.startTime}
-                    selectedEnd={form.endTime}
-                    selectedDate={form.date}
-                    onSelect={handleSlotClick}
-                    loading={previewLoading}
-                  />
-                ) : (
-                  <div className="time-placeholder">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-                         stroke="currentColor" strokeWidth="1.5"
-                         strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10"/>
-                      <polyline points="12 6 12 12 16 14"/>
-                    </svg>
-                    <p>Select a building &amp; date to check availability</p>
-                  </div>
-                )}
-              </div>
+            <div className="cal-centered">
+              <Calendar value={form.date} onChange={d => setField('date', d)} />
             </div>
           </div>
 
-          {/* Step 3: Event Details */}
+          {/* Step 3: Select Time Slots */}
+          <div className="form-step">
+            <div className="step-header">
+              <div className="step-header-pill"><span className="step-num">3</span><span className="step-title">Select Time Slots</span></div>
+            </div>
+            {form.building && form.date ? (
+              <SlotGrid
+                bookedRanges={bookedRanges}
+                selectedStart={form.startTime}
+                selectedEnd={form.endTime}
+                selectedDate={form.date}
+                onSelect={handleSlotClick}
+                loading={previewLoading}
+              />
+            ) : (
+              <div className="time-placeholder">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" strokeWidth="1.5"
+                     strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12 6 12 12 16 14"/>
+                </svg>
+                <p>Select a venue &amp; date first</p>
+              </div>
+            )}
+          </div>
+
+          {/* Step 4: Event Details */}
           <div className="form-step form-step-last">
             <div className="step-header">
-              <span className="step-num">3</span>
-              <span className="step-title">Event Details</span>
+              <div className="step-header-pill"><span className="step-num">4</span><span className="step-title">Event Details</span></div>
             </div>
-            <div className="details-grid">
+            <div className="details-stack">
               <div className="fg">
                 <label>Event Name</label>
                 <input
@@ -259,7 +338,7 @@ export default function PublicBooking() {
                   onChange={e => setField('contactNumber', e.target.value.replace(/[^0-9]/g, ''))}
                 />
               </div>
-              <div className="fg fg-full">
+              <div className="fg">
                 <label>Other Details</label>
                 <textarea
                   placeholder="Any additional information, requirements, or notes…"

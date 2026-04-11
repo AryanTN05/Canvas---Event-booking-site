@@ -37,9 +37,9 @@
 }
 .sg-dot.free     { background: #E5E7EB; }
 .sg-dot.booked   { background: #FCA5A5; }
-.sg-dot.selected { background: var(--accent); }
-.sg-dot.in-range { background: var(--accent-light); border: 1.5px solid var(--accent); }
-.sg-dot.end      { background: var(--accent); }
+.sg-dot.selected { background: #86efac; }
+.sg-dot.in-range { background: #f0fdf4; border: 1.5px solid #86efac; }
+.sg-dot.end      { background: #86efac; }
 
 /* Grid */
 .slot-grid {
@@ -101,23 +101,25 @@
 
 /* Selected start */
 .sg-start {
-  background: var(--accent);
-  color: white;
-  border-color: var(--accent);
+  background: #dcfce7;
+  color: #15803d;
+  border-color: #86efac;
+  font-weight: 700;
 }
 
 /* Selected end */
 .sg-end {
-  background: var(--accent);
-  color: white;
-  border-color: var(--accent);
+  background: #dcfce7;
+  color: #15803d;
+  border-color: #86efac;
+  font-weight: 700;
 }
 
 /* In selected range */
 .sg-in-range {
-  background: var(--accent-light);
-  color: var(--accent);
-  border-color: var(--accent);
+  background: #f0fdf4;
+  color: #16a34a;
+  border-color: #bbf7d0;
 }
 
 /* Hint text */
