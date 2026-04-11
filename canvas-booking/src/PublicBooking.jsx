@@ -31,18 +31,6 @@ export default function PublicBooking() {
   const [bookedRanges,   setBookedRanges]   = useState([])
   const [previewLoading, setPreviewLoading] = useState(false)
 
-  /* ── Toast ─────────────────────────────────────────────────────── */
-  const [toast, setToast] = useState(null)
-  const toastTimer = useRef(null)
-
-  useEffect(() => () => clearTimeout(toastTimer.current), [])
-
-  function showToast(type, msg) {
-    clearTimeout(toastTimer.current)
-    setToast({ type, msg })
-    toastTimer.current = setTimeout(() => setToast(null), 4200)
-  }
-
   /* ── Celebration popup ─────────────────────────────────────────── */
   const [showCelebration, setShowCelebration] = useState(false)
   const celebrationTimer = useRef(null)
@@ -312,20 +300,6 @@ export default function PublicBooking() {
           onCancel={() => setShowConfirm(false)}
           isLoading={submitting}
         />
-      )}
-
-      {/* Toast — for errors only */}
-      {toast && (
-        <div className={`toast t-${toast.type} show`}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            {toast.type === 'success'
-              ? <polyline points="20 6 9 17 4 12"/>
-              : <><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></>
-            }
-          </svg>
-          <span>{toast.msg}</span>
-        </div>
       )}
 
       {/* Celebration popup */}
