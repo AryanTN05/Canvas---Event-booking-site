@@ -33,7 +33,7 @@ export default function HeroSection({ onBookClick }) {
 
           {/* Left — Venue tabs */}
           <div className="venues-row">
-            <span className="venue-label">VENUES</span>
+            <span className="venue-label">Select Venue</span>
             {[
               { id: '1331', label: 'Canvas 1331', address: 'HSR Layout, Bengaluru' },
               { id: '1317', label: 'Canvas 1317', address: 'HSR Layout, Bengaluru' },
