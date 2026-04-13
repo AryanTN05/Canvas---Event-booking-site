@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import logo from '../assets/logo-purple.png'
+import { VENUE_PHOTOS } from '../constants/photos'
+import { cloudinaryUrl } from '../utils/cloudinary'
 import './HeroSection.css'
 
 const MAP_LINKS = {
@@ -52,10 +54,27 @@ export default function HeroSection({ onBookClick }) {
           {/* Right — Photo grid + Map link */}
           <div className="photo-area">
             <div className="photo-grid">
-              <div className="photo photo-1"><span>Photo 1</span></div>
-              <div className="photo photo-2"><span>Photo 2</span></div>
-              <div className="photo photo-3"><span>Photo 3</span></div>
-              <div className="photo photo-4"><span>Photo 4</span></div>
+              {(['photo-1','photo-2','photo-3','photo-4']).map((cls, i) => {
+                const photos = VENUE_PHOTOS[activeVenue];
+                const p = photos?.[i];
+                return (
+                  <div key={cls} className={`photo ${cls}`}>
+                    {p ? (
+                      <img
+                        src={cloudinaryUrl(p.publicId, 380, 260)}
+                        srcSet={`${cloudinaryUrl(p.publicId, 380, 260)} 380w, ${cloudinaryUrl(p.publicId, 760, 520)} 760w`}
+                        sizes="380px"
+                        alt={p.alt}
+                        loading="eager"
+                        width="380"
+                        height="260"
+                      />
+                    ) : (
+                      <span>Photo {i + 1}</span>
+                    )}
+                  </div>
+                );
+              })}
             </div>
 
             {/* Map link */}

@@ -187,6 +187,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  aspect-ratio: 380 / 260;
   min-height: 0;
 }
 

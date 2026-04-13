@@ -1,3 +1,13 @@
+export const VENUE_PHOTOS = {
+  '1331': [
+    { publicId: 'WhatsApp_Image_2026-04-13_at_12.55.55_kcpfqx',   alt: 'Canvas 1331 venue' },
+    { publicId: 'WhatsApp_Image_2026-04-13_at_12.55.55_1_olmx2y', alt: 'Canvas 1331 venue' },
+  ],
+  '1317': [
+    { publicId: '15094467-5354-420b-b4e4-99390f0ca017_ximkcf', alt: 'Canvas 1317 venue' },
+  ],
+};
+
 export const PAST_EVENT_PHOTOS = [
   { id: 1, publicId: 'DSC_0043_qhysxn',                                    alt: 'Past event at Canvas' },
   { id: 2, publicId: 'DSC_0109_tuvq3h',                                    alt: 'Past event at Canvas' },
